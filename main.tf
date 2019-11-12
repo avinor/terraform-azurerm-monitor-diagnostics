@@ -6,18 +6,18 @@ terraform {
 }
 
 locals {
-    diag_resource_list = split("/", var.destination)
+  diag_resource_list = split("/", var.destination)
 
-    log_analytics_id   = contains(local.diag_resource_list, "microsoft.operationalinsights") ? var.destination : null
-    storage_account_id = contains(local.diag_resource_list, "Microsoft.Storage") ? var.destination : null
-    event_hub_auth_id  = contains(local.diag_resource_list, "Microsoft.EventHub") ? var.destination : null
+  log_analytics_id   = contains(local.diag_resource_list, "microsoft.operationalinsights") ? var.destination : null
+  storage_account_id = contains(local.diag_resource_list, "Microsoft.Storage") ? var.destination : null
+  event_hub_auth_id  = contains(local.diag_resource_list, "Microsoft.EventHub") ? var.destination : null
 
-    targets_map = {for target in var.target_ids: target => true}
+  targets_map = { for target in var.target_ids : target => true }
 }
 
 resource "azurerm_monitor_diagnostic_setting" "main" {
-    for_each = local.targets_map
-    
+  for_each = local.targets_map
+
   name                           = "${var.name}-diag"
   target_resource_id             = each.key
   log_analytics_workspace_id     = local.log_analytics_id
