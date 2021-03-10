@@ -1,14 +1,16 @@
 terraform {
   required_version = ">= 0.12.6"
-  required_providers {
-    azurerm = "~> 1.36.0"
-  }
+}
+
+provider "azurerm" {
+  version = "~> 2.50.0"
+  features {}
 }
 
 locals {
   diag_resource_list = split("/", var.destination)
 
-  log_analytics_id   = contains(local.diag_resource_list, "microsoft.operationalinsights") ? var.destination : null
+  log_analytics_id   = contains(local.diag_resource_list, "Microsoft.OperationalInsights") ? var.destination : null
   storage_account_id = contains(local.diag_resource_list, "Microsoft.Storage") ? var.destination : null
   event_hub_auth_id  = contains(local.diag_resource_list, "Microsoft.EventHub") ? var.destination : null
 
