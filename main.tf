@@ -3,7 +3,7 @@ terraform {
   required_providers {
     azurerm = {
       source = "hashicorp/azurerm"
-      version = "~> 2.50.0"
+      version = "~> 3.94.0"
     }
   }
 }
@@ -32,14 +32,10 @@ resource "azurerm_monitor_diagnostic_setting" "main" {
   eventhub_name                  = local.event_hub_auth_id != null ? var.eventhub_name : null
   storage_account_id             = local.storage_account_id
 
-  dynamic "log" {
+  dynamic "enabled_log" {
     for_each = var.logs
     content {
-      category = log.value
-
-      retention_policy {
-        enabled = false
-      }
+      category = enabled_log.value
     }
   }
 
@@ -47,10 +43,6 @@ resource "azurerm_monitor_diagnostic_setting" "main" {
     for_each = var.metrics
     content {
       category = metric.value
-
-      retention_policy {
-        enabled = false
-      }
     }
   }
 }
